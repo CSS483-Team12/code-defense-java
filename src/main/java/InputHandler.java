@@ -27,14 +27,15 @@ public class InputHandler {
         return scanner.nextInt();
     }
 
-    // Read and validate a file name
-    public String readValidFileName(Scanner scanner, String fileType) {
-        System.out.println("Enter the name of the " + fileType + " file (must end in .txt): ");
-        String fileName = scanner.next().trim();
-        while (!fileName.matches("^[\\w,\\s-]+\\.txt$")) {
-            System.out.println("Invalid file name. Please ensure the file name ends with .txt and try again: ");
-            fileName = scanner.next().trim();
+    public String readValidFileName(Scanner scanner, String expectedExtension) {
+        System.out.println("Enter the name of the file (must end in " + expectedExtension + "): ");
+        String fileName = scanner.nextLine().trim();
+        String regexPattern = "^[\\w,\\s-]+\\." + expectedExtension + "$"; // Dynamic regex based on extension
+        while (!fileName.matches(regexPattern)) {
+            System.out.println("Invalid file name. Please ensure the file name ends with ." + expectedExtension + " and try again: ");
+            fileName = scanner.nextLine().trim();
         }
         return fileName;
     }
+
 }

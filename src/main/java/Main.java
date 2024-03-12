@@ -27,16 +27,32 @@ public class Main {
         // Informing about the default input file and asking for the input file name
         System.out.println("A default 'input.txt' file is available for use. You may also specify another file.");
         // Assuming inputFileName and inputFileExtension are already defined
-        System.out.println("Enter the name of the input file you wish to use:");
-        String inputFileName = scanner.nextLine();
-        String inputFileExtension = getFileExtension(inputFileName);
+        // Loop for input file name validation including existence check and regex validation
+        String inputFileName = "";
+        String inputFileExtension = "";
+        File inputFile;
+        do {
+            System.out.println("Enter the name of the input file you wish to use (including extension):");
+            inputFileName = scanner.nextLine();
+            inputFileExtension = getFileExtension(inputFileName);
+            inputFile = new File(inputFileName);
 
-        String outputFileName;
+            if (!inputFile.exists()) {
+                System.out.println("The input file does not exist. Please enter a different file name.");
+            } else if (!inputFileName.matches("^[\\w,\\s-]+\\.[\\w]+$")) { // Example regex for file name validation
+                System.out.println("Invalid file name format. Please ensure the file name is correct and try again:");
+                inputFileName = ""; // Reset to trigger the loop if needed
+            }
+        } while (inputFileName.isEmpty() || !inputFile.exists());
+
+        // Loop for output file name ensuring it does not exist and matches the input file's extension
+        String outputFileName = "";
         File outputFile;
         do {
             System.out.println("Enter the name of the output file (must have the same extension '" + inputFileExtension + "'):");
             outputFileName = scanner.nextLine();
             outputFile = new File(outputFileName);
+
             if (!outputFileName.endsWith(inputFileExtension)) {
                 System.out.println("The output file must have the same extension ('" + inputFileExtension + "') as the input file.");
             } else if (outputFile.exists()) {
@@ -46,7 +62,7 @@ public class Main {
 
         fileProcessor.copyFileToNewFile(inputFileName, outputFileName);
 
-        // Password setup and verification
+        // Password setup and verification remains unchanged
         passwordManager.handlePasswordSetup(scanner);
 
         System.out.println("All operations completed successfully.");
